@@ -2,14 +2,13 @@ const crypto = require('crypto')
 const hash = crypto.createHash('sha256')
 const path = require('path');
 const fs = require('fs')
+
 try {
     var config = JSON.parse(fs.readFileSync('config.json')) || {ignore: [path.basename(__filename),"config.json"], correcthash: ""}
 } catch {
 
     config = {ignore: [path.basename(__filename),"config.json"], correcthash: ""}
 }
-
-console.log('File hash checker v1.0 by ThatNerd')
 
 var walkSync = function(dir, filelist) {
         files = fs.readdirSync(dir);
@@ -27,6 +26,18 @@ var walkSync = function(dir, filelist) {
 
 var array = []
 var hashedfiles = []
+
+if (process.argv.slice(2)[0] == '--help') {
+    console.log(`
+File hash checker v1.0 by ThatNerd 
+Running this program without any parameteres will check all files (including subdirectories) and compare all of them against a known good hash. \n
+--generate - Will generate a new config that the program will test against
+    `)
+    process.exit()
+}
+
+
+console.log('File hash checker v1.0 by ThatNerd')
 
 console.log('Listing files..')
 walkSync('./',array)
@@ -61,4 +72,5 @@ if (process.argv.slice(2)[0] == '--generate') {
        console.log('Hmm, there is an inconsistency with one of the files, remember, adding or removing files will cause this.')
    }
 }
+
 
